@@ -1,0 +1,47 @@
+name: CICD for Node Js Project
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        node-version: [18.x]
+    env:
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKENS }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetch all history for private repositories
+          token: ${{ secrets.ACCESS_TOKENS }}
+      - uses: actions/checkout@v3
+      - name: Use node js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install and build
+        run: |
+          npm install uuid@latest
+          npm run build
+        env:
+          CI: true
+
+  deploy-dev:
+    needs: [build]
+    runs-on: self-hosted
+    steps: 
+      - name: SSH deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTS }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+               cd /var/www/html
+               touch n.txt
+            
+     
