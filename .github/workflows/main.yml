@@ -3,7 +3,7 @@ name: CICD for Node Js Project
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   build:
     runs-on: self-hosted
