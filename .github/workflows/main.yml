@@ -22,15 +22,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm install and build
-        run: |
-          npm install uuid@latest
-          npm run build
         env:
           CI: true
 
   deploy-dev:
-    needs: [build]
     runs-on: self-hosted
     steps: 
       - name: SSH deploy
