@@ -16,7 +16,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                withCredentials([string(credentialsId: 'VUEKEY', variable: 'SSH_KEY')]) {
+                withCredentials([string(credentialsId: '50.18.136.33', variable: 'SSH_KEY')]) {
                     // Retrieve the environment variables from GitHub Secrets
                     def ec2Instance = env.EC2_INSTANCE
                     def remoteDir = env.REMOTE_DIR
