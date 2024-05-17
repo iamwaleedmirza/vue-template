@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        SSH_KEY = credentials('KEYVUE') // GitHub secret name for SSH key
-        EC2_INSTANCE = '50.18.136.33' // EC2 instance IP or hostname
-        REMOTE_DIR = '/var/www/vue-template' // Remote directory on the EC2 instance
-    }
 
     stages {
         stage('Checkout') {
@@ -22,6 +17,11 @@ pipeline {
 
         stage('Deploy') {
             steps {
+                    withCredentials([string(credentialsId: 'VUEKEY', variable: 'VUEKEY')]) {
+                    // Retrieve the environment variables from GitHub Secrets
+                    def ec2Instance = env.EC2_INSTANCE
+                    def remoteDir = env.REMOTE_DIR
+                                   {
                 // Copy files to the EC2 instance
                 sh "scp -i ${SSH_KEY} -r ./* ubuntu@${EC2_INSTANCE}:${REMOTE_DIR}"
 
@@ -33,7 +33,9 @@ pipeline {
 
                 // Start the application on the EC2 instance
                 // sh "ssh -i \${SSH_KEY} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 start app'"
-            }
+            
+                                }
+                               } 
         }
     }
 
