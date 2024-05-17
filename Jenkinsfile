@@ -28,16 +28,16 @@ pipeline {
             }
             steps {
                 // Copy files to the EC2 instance
-                sh "scp -i \${SSH_KEY} -r ./\* ubuntu@\${EC2_INSTANCE}:\${REMOTE_DIR}"
+                sh "scp -i \${KEYVUE} -r ./\* ubuntu@\${EC2_INSTANCE}:\${REMOTE_DIR}"
 
                 // Connect to the EC2 instance via SSH
-                // sh "ssh -i \${SSH_KEY} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 stop app || true'"
+                // sh "ssh -i \${KEYVUE} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 stop app || true'"
 
                 // Install project dependencies on the EC2 instance
-                sh "ssh -i \${SSH_KEY} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && npm install'"
+                sh "ssh -i \${KEYVUE} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && npm install'"
 
                 // Start the application on the EC2 instance
-               // sh "ssh -i \${SSH_KEY} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 start app'"
+               // sh "ssh -i \${KEYVUE} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 start app'"
             }
         }
     }
