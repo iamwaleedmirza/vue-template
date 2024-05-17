@@ -28,7 +28,7 @@ pipeline {
             }
             steps {
                 // Copy files to the EC2 instance
-                sh "scp -i \${KEYVUE} -r ./\* ubuntu@\${EC2_INSTANCE}:\${REMOTE_DIR}"
+//                sh "scp -i \${KEYVUE} -r ./\* ubuntu@\${EC2_INSTANCE}:\${REMOTE_DIR}"
 
                 // Connect to the EC2 instance via SSH
                 // sh "ssh -i \${KEYVUE} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 stop app || true'"
