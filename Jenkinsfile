@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        SSH_KEY = credentials('KEYVUE') // GitHub secret name for SSH key
+        EC2_INSTANCE = '50.18.136.33' // EC2 instance IP or hostname
+        REMOTE_DIR = '/var/www/vue-template' // Remote directory on the EC2 instance
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -14,28 +20,22 @@ pipeline {
             }
         }
 
-
         stage('Deploy') {
-            environment {
-                SSH_KEY = credentials('KEYVUE') // Jenkins SSH key credential ID
-                EC2_INSTANCE = '50.18.136.33' // EC2 instance IP or hostname
-                REMOTE_DIR = '/var/www/vue-template' // Remote directory on the EC2 instance
-            }
             steps {
                 // Copy files to the EC2 instance
-//                sh "scp -i \${KEYVUE} -r ./\* ubuntu@\${EC2_INSTANCE}:\${REMOTE_DIR}"
+                sh "scp -i \${SSH_KEY} -r ./\* ubuntu@\${EC2_INSTANCE}:\${REMOTE_DIR}"
 
                 // Connect to the EC2 instance via SSH
-                // sh "ssh -i \${KEYVUE} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 stop app || true'"
+                // sh "ssh -i \${SSH_KEY} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 stop app || true'"
 
                 // Install project dependencies on the EC2 instance
-              //  sh "ssh -i \${KEYVUE} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && npm install'"
+                sh "ssh -i \${SSH_KEY} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && npm install'"
 
                 // Start the application on the EC2 instance
-               // sh "ssh -i \${KEYVUE} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 start app'"
+                // sh "ssh -i \${SSH_KEY} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 start app'"
             }
         }
-    
+    }
 
     post {
         success {
