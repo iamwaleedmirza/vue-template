@@ -23,7 +23,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 // Copy files to the EC2 instance
-                sh "scp -i \${SSH_KEY} -r ./\* ubuntu@\${EC2_INSTANCE}:\${REMOTE_DIR}"
+                sh "scp -i ${SSH_KEY} -r ./* ubuntu@${EC2_INSTANCE}:${REMOTE_DIR}"
 
                 // Connect to the EC2 instance via SSH
                 // sh "ssh -i \${SSH_KEY} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 stop app || true'"
