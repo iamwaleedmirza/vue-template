@@ -34,7 +34,7 @@ pipeline {
                 // sh "ssh -i \${KEYVUE} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 stop app || true'"
 
                 // Install project dependencies on the EC2 instance
-                sh "ssh -i \${KEYVUE} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && npm install'"
+              //  sh "ssh -i \${KEYVUE} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && npm install'"
 
                 // Start the application on the EC2 instance
                // sh "ssh -i \${KEYVUE} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 start app'"
