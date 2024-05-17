@@ -4,45 +4,27 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/iamwaleedmirza/vue-template.git']]])
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'npm install'
+                checkout scm
             }
         }
 
         stage('Deploy') {
             steps {
-                withCredentials([string(credentialsId: '50.18.136.33', variable: 'SSH_KEY')]) {
-                    // Retrieve the environment variables from GitHub Secrets
-                    def ec2Instance = env.EC2_INSTANCE
-                    def remoteDir = env.REMOTE_DIR
-
-                    // Copy files to the EC2 instance
-                    sh "scp -i $SSH_KEY -r ./* ubuntu@$ec2Instance:$remoteDir"
-
-                    // Connect to the EC2 instance via SSH
-                    // sh "ssh -i $SSH_KEY ubuntu@$ec2Instance 'cd $remoteDir && pm2 stop app || true'"
-
-                    // Install project dependencies on the EC2 instance
-                    sh "ssh -i $SSH_KEY ubuntu@$ec2Instance 'cd $remoteDir && npm install'"
-
-                    // Start the application on the EC2 instance
-                    // sh "ssh -i $SSH_KEY ubuntu@$ec2Instance 'cd $remoteDir && pm2 start app'"
+                withCredentials([sshUserPrivateKey(credentialsId: 'laravel', keyFileVariable: 'SSH_KEY')]) {
+                    script {
+                        def sshScript = '''
+                            # Copy files to the EC2 instance
+                            scp -i "$SSH_KEY" -r ./* ubuntu@50.18.136.33:~/var/www/html
+                            
+                            # Connect to the EC2 instance via SSH and execute commands
+                            ssh -o StrictHostKeyChecking=no -i "$SSH_KEY" ubuntu@50.18.136.33 'cd ~/var/www/html && npm install && npm start'
+                        '''
+                        sshScript = sshScript.replace("50.18.136.33", env.50.18.136.33)
+                        sshScript = sshScript.replace("/var/www/html", env./var/www/html)
+                        sh sshScript
+                    }
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Deployment successful!'
-        }
-        failure {
-            echo 'Deployment failed!'
         }
     }
 }
