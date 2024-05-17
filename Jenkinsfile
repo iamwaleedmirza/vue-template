@@ -22,13 +22,13 @@ pipeline {
                     def remoteDir = env.REMOTE_DIR
 
                     // Copy files to the EC2 instance
-                    sh "scp -i $SSH_KEY -r ./* ubuntu@$ec2Instance:$remoteDir"
+                    sh "scp -i $VUEKEY -r ./* ubuntu@$EC2_INSTANCE:$REMOTE_DIR"
 
                     // Connect to the EC2 instance via SSH
-                    // sh "ssh -i $SSH_KEY ubuntu@$ec2Instance 'cd $remoteDir && pm2 stop app || true'"
+                    // sh "ssh -i $SSH_KEY ubuntu@$EC2_INSTANCE 'cd $REMOTE_DIR && pm2 stop app || true'"
 
                     // Install project dependencies on the EC2 instance
-                    sh "ssh -i $SSH_KEY ubuntu@$ec2Instance 'cd $remoteDir && npm install'"
+                    sh "ssh -i $VUEKEY ubuntu@$EC2_INSTANCE 'cd $REMOTE_DIR && npm install'"
 
                     // Start the application on the EC2 instance
                     // sh "ssh -i $SSH_KEY ubuntu@$ec2Instance 'cd $remoteDir && pm2 start app'"
