@@ -1,7 +1,6 @@
 pipeline {
     agent any
 
-
     stages {
         stage('Checkout') {
             steps {
@@ -17,25 +16,24 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                    withCredentials([string(credentialsId: 'VUEKEY', variable: 'VUEKEY')]) {
+                withCredentials([string(credentialsId: 'VUEKEY', variable: 'SSH_KEY')]) {
                     // Retrieve the environment variables from GitHub Secrets
                     def ec2Instance = env.EC2_INSTANCE
                     def remoteDir = env.REMOTE_DIR
-                                   {
-                // Copy files to the EC2 instance
-                sh "scp -i ${SSH_KEY} -r ./* ubuntu@${EC2_INSTANCE}:${REMOTE_DIR}"
 
-                // Connect to the EC2 instance via SSH
-                // sh "ssh -i \${SSH_KEY} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 stop app || true'"
+                    // Copy files to the EC2 instance
+                    sh "scp -i $SSH_KEY -r ./* ubuntu@$ec2Instance:$remoteDir"
 
-                // Install project dependencies on the EC2 instance
-                sh "ssh -i \${SSH_KEY} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && npm install'"
+                    // Connect to the EC2 instance via SSH
+                    // sh "ssh -i $SSH_KEY ubuntu@$ec2Instance 'cd $remoteDir && pm2 stop app || true'"
 
-                // Start the application on the EC2 instance
-                // sh "ssh -i \${SSH_KEY} ubuntu@\${EC2_INSTANCE} 'cd \${REMOTE_DIR} && pm2 start app'"
-            
-                                }
-                               } 
+                    // Install project dependencies on the EC2 instance
+                    sh "ssh -i $SSH_KEY ubuntu@$ec2Instance 'cd $remoteDir && npm install'"
+
+                    // Start the application on the EC2 instance
+                    // sh "ssh -i $SSH_KEY ubuntu@$ec2Instance 'cd $remoteDir && pm2 start app'"
+                }
+            }
         }
     }
 
