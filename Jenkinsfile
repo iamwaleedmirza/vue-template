@@ -18,7 +18,7 @@ pipeline {
                         identityFile: '', // Leave empty if using Jenkins credentials
                         allowAnyHosts: true,
                         credentialsId: "${SSH_CREDENTIALS_ID}"
-                    ], command: 'mkdir -p /home/ubuntu/new_directory'
+                    ], command: 'sudo  mkdir -p /home/ubuntu/new_directory'
                 }
             }
         }
