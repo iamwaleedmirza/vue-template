@@ -1,27 +1,22 @@
-
-
 pipeline {
     agent any
+
     environment {
-        EC2_HOST = '50.18.136.33'
-        SSH_CREDENTIALS_ID = 'laravel'
+        SSH_CREDENTIALS_ID = 'laravel' // Replace with your credentials ID
+        REMOTE_HOST = '50.18.136.33' // Replace with your EC2 instance IP
+        REMOTE_USER = 'ubuntu' // Replace with your remote user (e.g., ec2-user, ubuntu)
+        REMOTE_DIRECTORY = '/home/ubuntu/new_directory'
     }
+
     stages {
-        stage('SSH to EC2 and create directory') {
+        stage('SSH to EC2 and Create Directory') {
             steps {
-                script {
-                    // SSH into EC2 and create a directory
-                    sshCommand remote: [
-                        name: 'server',
-                        host: "${EC2_HOST}",
-                        user: 'ubuntu', // Replace with your EC2 username
-                        identityFile: '', // Leave empty if using Jenkins credentials
-                        allowAnyHosts: true,
-                        credentialsId: "${SSH_CREDENTIALS_ID}"
-                    ], command: 'sudo  mkdir -p /home/ubuntu/new_directory'
+                withCredentials([sshUserPrivateKey(credentialsId: SSH_CREDENTIALS_ID, keyFileVariable: 'SSH_KEY')]) {
+                    sh '''
+                        ssh -i $SSH_KEY -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST "mkdir -p $REMOTE_DIRECTORY"
+                    '''
                 }
             }
         }
     }
 }
-
