@@ -16,6 +16,7 @@ pipeline {
                         host: "${EC2_HOST}",
                         user: 'ubuntu', // Replace with your EC2 username
                         identityFile: '', // Leave empty if using Jenkins credentials
+                        allowAnyHosts: true,
                         credentialsId: "${SSH_CREDENTIALS_ID}"
                     ], command: 'mkdir -p /home/ubuntu/new_directory'
                 }
