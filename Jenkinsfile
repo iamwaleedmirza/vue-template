@@ -35,7 +35,7 @@ pipeline {
                             cd $REMOTE_DIRECTORY;
                             rm -rf dist; // Remove existing dist folder
                         "
-                        scp -i $SSH_KEY -o StrictHostKeyChecking=no -r dist/* $REMOTE_USER@$REMOTE_HOST:$REMOTE_DIRECTORY/dist/
+                        // scp -i $SSH_KEY -o StrictHostKeyChecking=no -r dist/* $REMOTE_USER@$REMOTE_HOST:$REMOTE_DIRECTORY/dist/
                         ssh -i $SSH_KEY -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST "
                             cd $REMOTE_DIRECTORY;
                             npm install --production;
